@@ -66,6 +66,10 @@ export function API(url, config) {
     })
 }
 
+export function checkAPIStatusCode(response: {code: number}){
+  return response.code === 200
+}
+
 export function initError(url, error) {
   console.debug(`error with api:${url}`, error)
   const response = error.response

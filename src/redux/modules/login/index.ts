@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { API, constructFetchConfig, httpMethod, initError } from '../../../utilities'
+import { API, constructFetchConfig, httpMethod, initError, checkAPIStatusCode } from '../../../utilities'
 import { API_CONTEXT_PATH } from '../../../constants'
 
 export const USER_LOGIN: string = 'react-template/USER_LOGIN'
@@ -96,7 +96,11 @@ function* loginSaga(action: IActionType) {
   config.method = httpMethod.POST
   try {
     const payload = yield call(API, url, config)
-    yield put(loginSuccess(payload))
+    if(checkAPIStatusCode(payload)){
+      yield put(loginSuccess(payload))
+    }else {
+      yield put(loginError(yield call(initError, url, {error: payload.code})))
+    }
   } catch (error) {
     yield put(loginError(yield call(initError, url, error)))
   }
