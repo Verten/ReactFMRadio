@@ -1,104 +1,89 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, createStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
+import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
-import Avatar from '@material-ui/core/Avatar'
 import { IRootState } from '../../redux/modules/reducer'
 import { login } from '../../redux/modules/login'
+import { USERNAME, PASSWORD } from '../../constants'
 
 interface ILoginProps {
   actions: any
   classes: any
   loginSuccess: boolean
   userInfo: any
+  history: any
 }
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  flex: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-})
+const styles = theme =>
+  createStyles({
+    loginButton: {
+      marginTop: theme.spacing.unit * 2,
+    },
+    paper: {
+      width: '50%',
+      margin: `${theme.spacing.unit * 9}px auto 0 auto`,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    },
+  })
 
 export class LoginPage extends React.Component<ILoginProps, any> {
   constructor(props: ILoginProps) {
     super(props)
     this.state = {
-      username: '',
-      password: '',
+      [USERNAME]: '',
+      [PASSWORD]: '',
     }
-    this.isUserLogin = this.isUserLogin.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleTextFieldChange = this.handleTextFieldChange.bind(this)
   }
 
   public render() {
+    const { classes } = this.props
     return (
-      <div>
-        <div className={this.props.classes.root}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton className={this.props.classes.menuButton} color="inherit" aria-label="Radio">
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit" className={this.props.classes.flex}>
-                Radio
-              </Typography>
-              <Button color="inherit">{this.isUserLogin()}</Button>
-            </Toolbar>
-          </AppBar>
-        </div>
-        <div>
-          <TextField
-            id="email"
-            label="Email"
-            value={this.state.username}
-            onChange={this.handleTextFieldChange('username')}
-            margin="normal"
-            fullWidth={true}
-          />
-          <TextField
-            id="password-input"
-            label="Password"
-            type="password"
-            onChange={this.handleTextFieldChange('password')}
-            margin="normal"
-            fullWidth={true}
-          />
-        </div>
-        <Button variant="contained" color="primary" onClick={this.handleLogin}>
+      <Paper className={classes.paper}>
+        <TextField
+          id="email"
+          label="Email"
+          value={this.state.username}
+          onChange={this.handleTextFieldChange(USERNAME)}
+          margin="normal"
+          fullWidth={true}
+        />
+        <TextField
+          id="password-input"
+          label="Password"
+          type="password"
+          onChange={this.handleTextFieldChange(PASSWORD)}
+          margin="normal"
+          fullWidth={true}
+        />
+        <Button variant="contained" className={classes.loginButton} color="primary" onClick={this.handleLogin}>
           Login
         </Button>
-      </div>
+      </Paper>
     )
   }
 
-  protected isUserLogin(): string | JSX.Element {
-    const { loginSuccess, userInfo } = this.props
+  public componentWillReceiveProps(nextProps: ILoginProps) {
+    const { loginSuccess, history } = nextProps
     if (loginSuccess) {
-      return <Avatar alt="Adelle Charles" src={userInfo.profile.avatarUrl} />
+      history.replace({
+        pathname: '/',
+      })
     }
-    return 'Login'
   }
 
   protected handleLogin(): void {
     this.props.actions.login(this.state.username, this.state.password)
   }
 
-  protected handleTextFieldChange(propsName): (event: React.ChangeEvent<HTMLInputElement>) => void {
+  protected handleTextFieldChange(propsName: string): (event: React.ChangeEvent<HTMLInputElement>) => void {
     return event => {
       this.setState({
         [propsName]: event.target.value,

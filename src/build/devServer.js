@@ -12,7 +12,7 @@ const app = express()
 app.use(
   devMiddleware(compiler, {
     // webpack-dev-middleware options
-    writeToDisk: false,
+    writeToDisk: true,
     noInfo: true,
     publicPath: webpackConfig.output.publicPath,
   }),
@@ -32,10 +32,10 @@ app.use(
   }),
 )
 
-app.use('/', express.static(process.cwd() + `${conf.paths.public}`))
+app.use('/', express.static(process.cwd() + `/${conf.paths.tmp}`))
 
 app.get('*', function(request, response) {
-  response.sendFile(path.resolve(process.cwd(), `${conf.paths.public}`, 'index.html'))
+  response.sendFile(path.resolve(process.cwd(), `${conf.paths.tmp}`, 'index.html'))
 })
 
 app.listen(3000, () => console.log('app listening on port 3000!'))

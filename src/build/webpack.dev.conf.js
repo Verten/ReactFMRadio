@@ -26,11 +26,27 @@ DevConfig.module.rules.push({
 Object.assign(DevConfig, {
   mode: 'development',
   devtool: '#source-map',
-  entry: ['webpack-hot-middleware/client', `babel-polyfill`, `./${conf.path.src('index')}`],
+  entry: ['webpack/hot/dev-server', `babel-polyfill`, `./${conf.path.src('index')}`],
   output: {
     path: path.join(process.cwd(), conf.paths.tmp),
     publicPath: `${publicPath}`,
-    filename: 'app.[hash].js',
+    filename: 'app.js',
+    hotUpdateChunkFilename: 'hot/hot-update.js',
+    hotUpdateMainFilename: 'hot/hot-update.json',
+  },
+  devServer: {
+    port: 3000,
+    hot: true,
+    inline: true,
+    compress: true,
+    historyApiFallback: true,
+    contentBase: [path.join(process.cwd(), conf.paths.tmp)],
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000/',
+        changeOrigin: true,
+      },
+    },
   },
 })
 
