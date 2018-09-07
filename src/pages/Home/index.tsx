@@ -25,7 +25,7 @@ export class HomePage extends React.Component<IHomePageProps, any> {
 
   public render() {
     const { classes } = this.props
-    return <div className={classes.root}>Load hot music!!!</div>
+    return <div className={classes.root}>Welcome!</div>
   }
 }
 

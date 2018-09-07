@@ -8,6 +8,8 @@ import TextField from '@material-ui/core/TextField'
 import { IRootState } from '../../redux/modules/reducer'
 import { login } from '../../redux/modules/login'
 import { USERNAME, PASSWORD } from '../../constants'
+import { handleErrorInfo } from '../../utilities'
+import InfoBox from '../../components/InfoBox'
 
 interface ILoginProps {
   actions: any
@@ -15,6 +17,7 @@ interface ILoginProps {
   loginSuccess: boolean
   userInfo: any
   history: any
+  error: any
 }
 
 const styles = theme =>
@@ -23,7 +26,7 @@ const styles = theme =>
       marginTop: theme.spacing.unit * 2,
     },
     paper: {
-      width: '50%',
+      width: '65%',
       margin: `${theme.spacing.unit * 9}px auto 0 auto`,
       display: 'flex',
       flexDirection: 'column',
@@ -38,6 +41,10 @@ export class LoginPage extends React.Component<ILoginProps, any> {
     this.state = {
       [USERNAME]: '',
       [PASSWORD]: '',
+      loginInfo: {
+        open: false,
+        message: '',
+      },
     }
     this.handleLogin = this.handleLogin.bind(this)
     this.handleTextFieldChange = this.handleTextFieldChange.bind(this)
@@ -66,15 +73,24 @@ export class LoginPage extends React.Component<ILoginProps, any> {
         <Button variant="contained" className={classes.loginButton} color="primary" onClick={this.handleLogin}>
           Login
         </Button>
+        <InfoBox infoConfig={this.state.loginInfo} />
       </Paper>
     )
   }
 
   public componentWillReceiveProps(nextProps: ILoginProps) {
-    const { loginSuccess, history } = nextProps
+    const { loginSuccess, history, error } = nextProps
     if (loginSuccess) {
       history.replace({
         pathname: '/',
+      })
+    }
+    if (error) {
+      this.setState({
+        loginInfo: {
+          open: true,
+          message: handleErrorInfo(error),
+        },
       })
     }
   }
@@ -87,6 +103,11 @@ export class LoginPage extends React.Component<ILoginProps, any> {
     return event => {
       this.setState({
         [propsName]: event.target.value,
+        // reset info message
+        loginInfo: {
+          open: false,
+          message: '',
+        },
       })
     }
   }

@@ -66,7 +66,7 @@ export function API(url, config) {
     })
 }
 
-export function checkAPIStatusCode(response: {code: number}){
+export function checkAPIStatusCode(response: { code: number }) {
   return response.code === 200
 }
 
@@ -144,4 +144,13 @@ export function constructFetchConfig(url: string, method: httpMethod, parameter:
     config,
     url: `${url}?${queryString}`,
   }
+}
+
+interface IErrorType {
+  error: number
+}
+export function handleErrorInfo(error: IErrorType) {
+  let errorInfo: string = ''
+  errorInfo = error.error.toString()
+  return errorInfo
 }

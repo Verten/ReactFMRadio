@@ -7,7 +7,6 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import createStore from './redux/createStore'
-const store = createStore({})
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +15,9 @@ const theme = createMuiTheme({
   },
 })
 
-const renderApp = store => {
+const store = createStore({})
+
+const renderApp = () => {
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
@@ -29,5 +30,14 @@ const renderApp = store => {
   )
 }
 
-renderApp(store)
+if (process.env.NODE_ENV === 'development') {
+  if (module.hot) {
+    // only need replace entry point
+    module.hot.accept('./App', () => {
+      renderApp()
+    })
+  }
+}
+
+renderApp()
 registerServiceWorker()

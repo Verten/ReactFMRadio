@@ -43,6 +43,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         username: action.username,
         password: action.password,
         loginSuccess: false,
+        error: undefined,
       }
     case USER_LOGIN_SUCCESS:
       return {
@@ -50,6 +51,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         password: undefined,
         userInfo: action.payload,
         loginSuccess: true,
+        error: undefined,
       }
     case USER_LOGIN_FAILED:
       return {
@@ -96,10 +98,10 @@ function* loginSaga(action: IActionType) {
   config.method = httpMethod.POST
   try {
     const payload = yield call(API, url, config)
-    if(checkAPIStatusCode(payload)){
+    if (checkAPIStatusCode(payload)) {
       yield put(loginSuccess(payload))
-    }else {
-      yield put(loginError(yield call(initError, url, {error: payload.code})))
+    } else {
+      yield put(loginError(yield call(initError, url, { error: payload.code })))
     }
   } catch (error) {
     yield put(loginError(yield call(initError, url, error)))
