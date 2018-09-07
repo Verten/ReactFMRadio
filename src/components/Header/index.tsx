@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, createStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -19,18 +19,19 @@ export interface IHeaderProps {
   location: any
 }
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  flex: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-})
+const styles = theme =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    flex: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginLeft: -12,
+      marginRight: 20,
+    },
+  })
 
 export class Header extends React.Component<IHeaderProps, any> {
   constructor(props) {

@@ -33,6 +33,7 @@ export class AppPage extends React.Component<IAppPageProps, any> {
         <CssBaseline />
         <Header userInfo={this.props.userInfo} loginSuccess={this.props.loginSuccess} />
         <Router />
+        {/*there should have a footer and snackbar can put into it*/}
       </div>
     )
   }

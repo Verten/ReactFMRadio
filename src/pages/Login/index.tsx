@@ -90,6 +90,7 @@ export class LoginPage extends React.Component<ILoginProps, any> {
         loginInfo: {
           open: true,
           message: handleErrorInfo(error),
+          type: 'error',
         },
       })
     }
