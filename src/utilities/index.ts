@@ -135,7 +135,7 @@ export function constructFetchConfig(url: string, method: httpMethod, parameter:
       if (queryString !== '') {
         queryString = queryString.slice(1)
       }
-      console.info(`${url}?${queryString}`)
+      console.info(`url: ${url}, query string: ${queryString}`)
     } else {
       const payload = {}
       keys.forEach(key => (payload[key] = parameter[key]))
@@ -144,7 +144,7 @@ export function constructFetchConfig(url: string, method: httpMethod, parameter:
   }
   return {
     config,
-    url: `${url}?${queryString}`,
+    url: `${queryString === '' ? `${url}` : `${url}?${queryString}`}`,
   }
 }
 
