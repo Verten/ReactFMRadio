@@ -4,6 +4,7 @@ const BaseConfig = require('./webpack.conf')
 const conf = require('./conf')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const ProdConfig = {
   ...BaseConfig,
@@ -18,6 +19,19 @@ ProdConfig.plugins.push(
       PUBLIC_URL: `"${publicUrl}"`,
     },
   }),
+)
+
+ProdConfig.plugins.push(
+  new CopyWebpackPlugin(
+    [
+      {
+        from: `${path.join(process.cwd(), conf.paths.public)}/customize-service-worker.js`,
+        to: `${path.join(process.cwd(), conf.paths.dist)}`,
+        toType: 'dir',
+      },
+    ],
+    { debug: 'info' },
+  ),
 )
 
 ProdConfig.module.rules.push({
