@@ -150,9 +150,14 @@ export function constructFetchConfig(url: string, method: httpMethod, parameter:
 
 interface IErrorType {
   error: number
+  statusText: string
 }
 export function handleErrorInfo(error: IErrorType) {
   let errorInfo: string = ''
-  errorInfo = error.error.toString()
+  if (error.error) {
+    errorInfo = error.error.toString()
+  } else {
+    errorInfo = error.statusText
+  }
   return errorInfo
 }

@@ -4,13 +4,16 @@ import { bindActionCreators } from 'redux'
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import { IRootState } from '../../redux/modules/reducer'
+import { handleErrorInfo } from '../../utilities'
 import { fetchTopPlaylist } from '../../redux/modules/playlist'
 import PlaylistCard from '../../components/PlaylistCard'
+import InfoBox from '../../components/InfoBox'
 
 export interface IHomePageProps {
   classes: any
   actions: any
   playlists: any
+  error: any
 }
 
 const styles = theme =>
@@ -21,7 +24,6 @@ const styles = theme =>
     paper: {
       display: 'flex',
       flexWrap: 'wrap',
-      // flexDirection: 'column',
       justifyContent: 'center',
       padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     },
@@ -30,7 +32,12 @@ const styles = theme =>
 export class HomePage extends React.Component<IHomePageProps, any> {
   constructor(props: IHomePageProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      playlistInfo: {
+        open: false,
+        message: '',
+      },
+    }
     this.renderPlaylistCard = this.renderPlaylistCard.bind(this)
   }
 
@@ -41,8 +48,30 @@ export class HomePage extends React.Component<IHomePageProps, any> {
         {/* <div className={classes.root}> */}
         {this.renderPlaylistCard()}
         {/* </div> */}
+        <InfoBox infoConfig={this.state.playlistInfo} />
       </Paper>
     )
+  }
+
+  public componentWillReceiveProps(nextProps: IHomePageProps) {
+    const { error } = nextProps
+    if (error) {
+      this.setState({
+        playlistInfo: {
+          open: true,
+          type: 'error',
+          message: handleErrorInfo(error),
+        },
+      })
+    } else {
+      this.setState({
+        playlistInfo: {
+          open: true,
+          type: 'success',
+          message: 'Load successfully...',
+        },
+      })
+    }
   }
 
   public componentDidMount() {
