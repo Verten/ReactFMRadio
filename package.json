@@ -34,14 +34,14 @@
     "express": "^4.16.3",
     "immutable": "^3.8.2",
     "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0",
-    "redux-saga": "^0.16.0",
-    "lodash": "^4.17.10"
+    "redux-saga": "^0.16.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.116",

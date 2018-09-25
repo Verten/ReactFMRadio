@@ -2,9 +2,9 @@ import { call, put, takeEvery } from 'redux-saga/effects'
 import { API, constructFetchConfig, httpMethod, initError, checkAPIStatusCode } from '../../../utilities'
 import { API_CONTEXT_PATH } from '../../../constants'
 
-export const USER_LOGIN: string = 'react-template/USER_LOGIN'
-export const USER_LOGIN_SUCCESS: string = 'react-template/USER_LOGIN_SUCCESS'
-export const USER_LOGIN_FAILED: string = 'react-template/USER_LOGIN_FAILED'
+export const USER_LOGIN: string = '@react-template/USER_LOGIN'
+export const USER_LOGIN_SUCCESS: string = '@react-template/USER_LOGIN_SUCCESS'
+export const USER_LOGIN_FAILED: string = '@react-template/USER_LOGIN_FAILED'
 
 const userLoginApi: object = {
   [USER_LOGIN]: `${API_CONTEXT_PATH}/login`,

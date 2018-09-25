@@ -132,7 +132,9 @@ export function constructFetchConfig(url: string, method: httpMethod, parameter:
     const keys = Object.keys(parameter)
     if (method.toUpperCase() === 'GET') {
       keys.forEach(key => (queryString = `${queryString}&${key}=${parameter[key]}`))
-      queryString = queryString.slice(1)
+      if (queryString !== '') {
+        queryString = queryString.slice(1)
+      }
       console.info(`${url}?${queryString}`)
     } else {
       const payload = {}
