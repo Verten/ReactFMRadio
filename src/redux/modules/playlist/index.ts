@@ -50,12 +50,14 @@ export interface IPlaylistState {
   playlistDetail: IPlaylistDetail | undefined | null
   playlists: IPlaylists[] | undefined | null
   error: object | undefined | null
+  isProcessing: boolean
 }
 
 const initialState: IPlaylistState = {
   playlists: undefined,
   playlistDetail: undefined,
   error: undefined,
+  isProcessing: false,
 }
 
 // reducer
@@ -65,29 +67,40 @@ export default (state: IPlaylistState = initialState, action: IPlaylistAction): 
       return {
         ...state,
         playlists: [],
+        isProcessing: true,
       }
     case FETCH_TOP_PLAYLIST_SUCCESS:
       return {
         ...state,
         playlists: action.payload.playlists,
+        isProcessing: false,
       }
     case FETCH_TOP_PLAYLIST_FAILED:
       return {
         ...state,
         playlists: [],
         error: action.error,
+        isProcessing: false,
       }
     case FETCH_PLAYLIST_DETAIL:
       return {
         ...state,
         playlistDetail: undefined,
+        isProcessing: true,
       }
     case FETCH_PLAYLIST_DETAIL_SUCCESS:
       return {
         ...state,
         playlistDetail: action.payload.playlist,
+        isProcessing: false,
       }
     case FETCH_PLAYLIST_DETAIL_FAILED:
+      return {
+        ...state,
+        playlistDetail: undefined,
+        error: action.error,
+        isProcessing: false,
+      }
     default:
       return state
   }

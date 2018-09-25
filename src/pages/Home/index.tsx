@@ -8,12 +8,14 @@ import { handleErrorInfo } from '../../utilities'
 import { fetchTopPlaylist } from '../../redux/modules/playlist'
 import PlaylistCard from '../../components/PlaylistCard'
 import InfoBox from '../../components/InfoBox'
+import LoadingBox from '../../components/Loading'
 
 export interface IHomePageProps {
   classes: any
   actions: any
   playlists: any
   error: any
+  isProcessing: boolean
 }
 
 const styles = theme =>
@@ -49,6 +51,7 @@ export class HomePage extends React.Component<IHomePageProps, any> {
         {this.renderPlaylistCard()}
         {/* </div> */}
         <InfoBox infoConfig={this.state.playlistInfo} />
+        <LoadingBox isProcessing={this.props.isProcessing} />
       </Paper>
     )
   }

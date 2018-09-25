@@ -10,6 +10,7 @@ import { login } from '../../redux/modules/login'
 import { USERNAME, PASSWORD } from '../../constants'
 import { handleErrorInfo } from '../../utilities'
 import InfoBox from '../../components/InfoBox'
+import LoadingBox from '../../components/Loading'
 
 interface ILoginProps {
   actions: any
@@ -18,6 +19,7 @@ interface ILoginProps {
   userInfo: any
   history: any
   error: any
+  isProcessing: boolean
 }
 
 const styles = theme =>
@@ -74,6 +76,7 @@ export class LoginPage extends React.Component<ILoginProps, any> {
           Login
         </Button>
         <InfoBox infoConfig={this.state.loginInfo} />
+        <LoadingBox isProcessing={this.props.isProcessing} />
       </Paper>
     )
   }

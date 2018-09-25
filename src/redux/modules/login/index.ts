@@ -22,6 +22,7 @@ export interface ILoginState {
   username: string | undefined
   password: string | undefined
   userInfo: object | undefined | null
+  isProcessing: boolean
   error: object | undefined
   loginSuccess: boolean
 }
@@ -30,6 +31,7 @@ const initialState: ILoginState = {
   username: undefined,
   password: undefined,
   userInfo: null,
+  isProcessing: false,
   error: undefined,
   loginSuccess: false,
 }
@@ -44,6 +46,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         password: action.password,
         loginSuccess: false,
         error: undefined,
+        isProcessing: true,
       }
     case USER_LOGIN_SUCCESS:
       return {
@@ -52,6 +55,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         userInfo: action.payload,
         loginSuccess: true,
         error: undefined,
+        isProcessing: false,
       }
     case USER_LOGIN_FAILED:
       return {
@@ -60,6 +64,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         password: undefined,
         loginSuccess: false,
         error: action.error,
+        isProcessing: false,
       }
     default:
       return state
