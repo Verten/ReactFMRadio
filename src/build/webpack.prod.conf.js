@@ -3,23 +3,24 @@ const webpack = require('webpack')
 const BaseConfig = require('./webpack.conf')
 const conf = require('./conf')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const DevConfig = {
+const ProdConfig = {
   ...BaseConfig,
 }
 
 const publicPath = (publicUrl = `${conf.paths.publicUrl}`)
 
-DevConfig.plugins.push(
+ProdConfig.plugins.push(
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: '"production"',
-      PUBLIC_URL: `${publicUrl}`,
+      PUBLIC_URL: `"${publicUrl}"`,
     },
   }),
 )
 
-DevConfig.module.rules.push({
+ProdConfig.module.rules.push({
   test: /\.(css|scss)$/,
   loader: ExtractTextPlugin.extract({
     fallback: 'style-loader',
@@ -27,7 +28,27 @@ DevConfig.module.rules.push({
   }),
 })
 
-Object.assign(DevConfig, {
+ProdConfig.optimization = {
+  runtimeChunk: false,
+  splitChunks: {
+    cacheGroups: {
+      commons: {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendors',
+        chunks: 'all',
+      },
+    },
+  },
+  minimizer: [
+    new UglifyJsPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+    }),
+  ],
+}
+
+Object.assign(ProdConfig, {
   mode: 'production',
   entry: [`babel-polyfill`, `./${conf.path.src('index')}`],
   output: {
@@ -37,4 +58,4 @@ Object.assign(DevConfig, {
   },
 })
 
-module.exports = DevConfig
+module.exports = ProdConfig
