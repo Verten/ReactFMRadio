@@ -10,11 +10,13 @@ import PlaylistCard from '../../components/PlaylistCard'
 import InfoBox from '../../components/InfoBox'
 import LoadingBox from '../../components/Loading'
 
-export interface IHomePageProps {
+export interface IPlaylistPageProps {
   classes: any
   actions: any
   playlists: any
   error: any
+  history: any
+  location: any
   isProcessing: boolean
 }
 
@@ -31,8 +33,8 @@ const styles = theme =>
     },
   })
 
-export class HomePage extends React.Component<IHomePageProps, any> {
-  constructor(props: IHomePageProps) {
+export class PlaylistPage extends React.Component<IPlaylistPageProps, any> {
+  constructor(props: IPlaylistPageProps) {
     super(props)
     this.state = {
       playlistInfo: {
@@ -56,7 +58,7 @@ export class HomePage extends React.Component<IHomePageProps, any> {
     )
   }
 
-  public componentWillReceiveProps(nextProps: IHomePageProps) {
+  public componentWillReceiveProps(nextProps: IPlaylistPageProps) {
     const { error } = nextProps
     if (error) {
       this.setState({
@@ -101,8 +103,13 @@ export class HomePage extends React.Component<IHomePageProps, any> {
   }
 
   protected handleClickPlaylist(id: number): () => void {
+    const { history, location } = this.props
     return () => {
       console.info(`Playlist id -> ${id}`)
+      history.push({
+        pathname: `/playlist/${id}`,
+        state: { from: location.pathname },
+      })
     }
   }
 }
@@ -128,4 +135,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withStyles(styles)(HomePage))
+)(withStyles(styles)(PlaylistPage))

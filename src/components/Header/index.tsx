@@ -49,22 +49,30 @@ export class Header extends React.Component<IHeaderProps, any> {
             <MenuIcon />
           </IconButton>
           <Typography variant="title" color="inherit" className={this.props.classes.flex}>
-            Radio
+            {this.isUserLogin('nickname')}
           </Typography>
           <Button color="inherit" onClick={this.handleClick}>
-            {this.isUserLogin()}
+            {this.isUserLogin('avatar')}
           </Button>
         </Toolbar>
       </AppBar>
     )
   }
 
-  protected isUserLogin(): string | JSX.Element {
+  protected isUserLogin(type: string): string | JSX.Element {
     const { loginSuccess, userInfo } = this.props
-    if (loginSuccess) {
-      return <Avatar alt="Adelle Charles" src={userInfo.profile.avatarUrl} />
+    if (type === 'avatar') {
+      if (loginSuccess) {
+        return <Avatar alt="Adelle Charles" src={userInfo.profile.avatarUrl} />
+      }
+      return 'Login'
+    } else if (type === 'nickname') {
+      if (loginSuccess) {
+        return `${userInfo.profile.nickname.toUpperCase()}`
+      }
+      return 'Radio'
     }
-    return 'Login'
+    return ''
   }
 
   protected handleClick(): void {
