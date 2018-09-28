@@ -39,6 +39,9 @@ const styles = theme =>
       transition: 'height 0.5s ease',
       whiteSpace: 'pre-line',
     },
+    detailsExpand: {
+      height: 'auto',
+    },
     content: {
       flex: '1 0 auto',
     },
@@ -78,18 +81,21 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
       return (
         <Card className={classes.card}>
           <CardMedia className={classes.cover} image={playlistDetail.coverImgUrl} title={playlistDetail.name} />
-          <div className={classes.details}>
+          <div
+            className={`${
+              this.state.showDetail ? `${classes.details} ${classes.detailsExpand}` : `${classes.details}`
+            }`}>
+            <CardActions>
+              <Button size="small" color="primary" onClick={this.showMoreDescription()}>
+                Detail
+              </Button>
+            </CardActions>
             <CardContent className={classes.content}>
               <Typography variant="headline">{playlistDetail.name}</Typography>
               <Typography variant="subheading" color="textSecondary">
                 {playlistDetail.description}
               </Typography>
             </CardContent>
-            <CardActions>
-              <Button size="small" color="primary" onClick={this.showMoreDescription()}>
-                Detail
-              </Button>
-            </CardActions>
           </div>
         </Card>
       )
@@ -100,7 +106,7 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
     return event => {
       console.info(event)
       this.setState({
-        showDetail: true,
+        showDetail: !this.state.showDetail,
       })
     }
   }
