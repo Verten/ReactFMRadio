@@ -42,6 +42,9 @@ const styles = theme =>
     detailsExpand: {
       height: 'auto',
     },
+    actionButton:{
+      display: 'block',
+    },
     content: {
       flex: '1 0 auto',
     },
@@ -85,7 +88,7 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
             className={`${
               this.state.showDetail ? `${classes.details} ${classes.detailsExpand}` : `${classes.details}`
             }`}>
-            <CardActions>
+            <CardActions className={classes.actionButton}>
               <Button size="small" color="primary" onClick={this.showMoreDescription()}>
                 Detail
               </Button>
