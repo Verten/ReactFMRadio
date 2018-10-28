@@ -30,6 +30,7 @@ const styles = theme =>
       flex: '1 0 auto',
       width: 251,
       height: 251,
+      borderRadius: '4px',
     },
     details: {
       display: 'flex',
