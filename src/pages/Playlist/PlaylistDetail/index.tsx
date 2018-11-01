@@ -35,6 +35,7 @@ const styles = theme =>
       flex: '1 0 auto',
       width: 251,
       height: 251,
+      borderRadius: '4px',
     },
     details: {
       display: 'flex',
@@ -55,6 +56,9 @@ const styles = theme =>
       '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.background.default,
       },
+    },
+    actionButton: {
+      display: 'block',
     },
     content: {
       flex: '1 0 auto',
@@ -110,7 +114,7 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
             className={`${
               this.state.showDetail ? `${classes.details} ${classes.detailsExpand}` : `${classes.details}`
             }`}>
-            <CardActions>
+            <CardActions className={classes.actionButton}>
               <Button size="small" color="primary" onClick={this.showMoreDescription()}>
                 Detail
               </Button>
