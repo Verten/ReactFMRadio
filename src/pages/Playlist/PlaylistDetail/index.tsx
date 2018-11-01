@@ -9,6 +9,11 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 import { fetchPlaylistDetail } from '../../../redux/modules/playlist'
 import { IRootState } from '../../../redux/modules/reducer'
 import LoadingBox from '../../../components/Loading'
@@ -42,6 +47,15 @@ const styles = theme =>
     detailsExpand: {
       height: 'auto',
     },
+    table: {
+      minWidth: 400,
+      marginTop: `${theme.spacing.unit * 3}px`,
+    },
+    row: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.background.default,
+      },
+    },
     content: {
       flex: '1 0 auto',
     },
@@ -49,6 +63,16 @@ const styles = theme =>
       padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     },
   })
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell)
 
 class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> {
   constructor(props: IPlaylistDetailPageProps) {
@@ -64,6 +88,7 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
     return (
       <Paper className={classes.paper}>
         {this.renderPlaylistDetail(playlistDetail, classes)}
+        {this.renderPlaylistTracks(playlistDetail, classes)}
         <LoadingBox isProcessing={this.props.isProcessing} />
       </Paper>
     )
@@ -102,6 +127,35 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
     }
     return null
   }
+
+  protected renderPlaylistTracks(playlistDetail: any, classes: any): JSX.Element | null {
+    if (playlistDetail && playlistDetail.tracks && playlistDetail.tracks.length > 0) {
+      return (
+        <Paper>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <CustomTableCell>Name</CustomTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {playlistDetail.tracks.map(track => {
+                return (
+                  <TableRow className={classes.row} key={track.id}>
+                    <CustomTableCell component="th" scope="row">
+                      {track.name}
+                    </CustomTableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </Paper>
+      )
+    }
+    return null
+  }
+
   private showMoreDescription(): (event: React.MouseEvent<HTMLElement>) => void {
     return event => {
       console.info(event)
