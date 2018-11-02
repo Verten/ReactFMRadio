@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { isEqual } from 'lodash'
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -15,8 +16,10 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { fetchPlaylistDetail } from '../../../redux/modules/playlist'
+import { fetchSong, ISongProps } from '../../../redux/modules/song'
 import { IRootState } from '../../../redux/modules/reducer'
 import LoadingBox from '../../../components/Loading'
+import AudioComponent from '../../../components/Audio'
 
 export interface IPlaylistDetailPageProps {
   match: any
@@ -24,6 +27,7 @@ export interface IPlaylistDetailPageProps {
   actions: any
   isProcessing: boolean
   playlistDetail: any
+  data: ISongProps[]
 }
 
 const styles = theme =>
@@ -38,12 +42,23 @@ const styles = theme =>
       borderRadius: '4px',
     },
     details: {
-      display: 'flex',
-      flexDirection: 'column',
+      position: 'relative',
+      // display: 'flex',
+      // flexDirection: 'column',
       width: '100%',
       height: 251,
       transition: 'height 0.5s ease',
       whiteSpace: 'pre-line',
+      overflow: 'hidden',
+      paddingBottom: `${theme.spacing.unit * 3}px`,
+      '&:after': {
+        content: '""',
+        width: '100%',
+        height: `${theme.spacing.unit * 5}px`,
+        position: 'absolute',
+        bottom: 0,
+        background: 'linear-gradient(to top,white, transparent)',
+      },
     },
     detailsExpand: {
       height: 'auto',
@@ -58,6 +73,10 @@ const styles = theme =>
       },
     },
     actionButton: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      zIndex: 1,
       display: 'block',
     },
     content: {
@@ -70,11 +89,11 @@ const styles = theme =>
 
 const CustomTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.primary.light,
     color: theme.palette.common.white,
   },
   body: {
-    fontSize: 14,
+    fontSize: 12,
   },
 }))(TableCell)
 
@@ -83,16 +102,19 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
     super(props)
     this.state = {
       showDetail: false,
+      selectedSong: [],
     }
     this.renderPlaylistDetail = this.renderPlaylistDetail.bind(this)
   }
 
   public render() {
     const { classes, playlistDetail } = this.props
+    const { selectedSong } = this.state
     return (
       <Paper className={classes.paper}>
         {this.renderPlaylistDetail(playlistDetail, classes)}
         {this.renderPlaylistTracks(playlistDetail, classes)}
+        <AudioComponent songs={selectedSong} />
         <LoadingBox isProcessing={this.props.isProcessing} />
       </Paper>
     )
@@ -105,6 +127,31 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
     }
   }
 
+  public componentWillReceiveProps(nextProps: IPlaylistDetailPageProps) {
+    const fetchSong = nextProps.data
+    const { selectedSong } = this.state
+    if (fetchSong) {
+      selectedSong.length !== 0
+        ? selectedSong.forEach((song, index) => {
+            if (!isEqual(song.id, fetchSong[0].id)) {
+              selectedSong.push(fetchSong[0])
+            }
+          })
+        : selectedSong.push(fetchSong[0])
+      this.setState({
+        selectedSong,
+      })
+    }
+  }
+
+  public shouldComponentUpdate(nextProps: IPlaylistDetailPageProps) {
+    return (
+      !isEqual(nextProps.data, this.props.data) ||
+      !isEqual(nextProps.playlistDetail, this.props.playlistDetail) ||
+      !isEqual(nextProps.isProcessing, this.props.isProcessing)
+    )
+  }
+
   protected renderPlaylistDetail(playlistDetail: any, classes: any): JSX.Element | null {
     if (playlistDetail) {
       return (
@@ -114,17 +161,17 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
             className={`${
               this.state.showDetail ? `${classes.details} ${classes.detailsExpand}` : `${classes.details}`
             }`}>
-            <CardActions className={classes.actionButton}>
-              <Button size="small" color="primary" onClick={this.showMoreDescription()}>
-                Detail
-              </Button>
-            </CardActions>
             <CardContent className={classes.content}>
               <Typography variant="headline">{playlistDetail.name}</Typography>
               <Typography variant="subheading" color="textSecondary">
                 {playlistDetail.description}
               </Typography>
             </CardContent>
+            <CardActions className={classes.actionButton}>
+              <Button size="small" color="primary" onClick={this.showMoreDescription()}>
+                Detail
+              </Button>
+            </CardActions>
           </div>
         </Card>
       )
@@ -145,7 +192,7 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
             <TableBody>
               {playlistDetail.tracks.map(track => {
                 return (
-                  <TableRow className={classes.row} key={track.id}>
+                  <TableRow hover={true} className={classes.row} key={track.id} onClick={this.handleClickTrack(track)}>
                     <CustomTableCell component="th" scope="row">
                       {track.name}
                     </CustomTableCell>
@@ -168,12 +215,20 @@ class PlaylistDetailPage extends React.Component<IPlaylistDetailPageProps, any> 
       })
     }
   }
+
+  private handleClickTrack(track: { id: number }): (event: React.MouseEvent<HTMLElement>) => void {
+    return event => {
+      console.info('click:', track)
+      this.props.actions.fetchSong(track.id)
+    }
+  }
 }
 
 const mapStateToProps = (state: IRootState) => {
-  const { Playlist } = state
+  const { Playlist, Song } = state
   return {
     ...Playlist,
+    ...Song,
   }
 }
 
@@ -182,6 +237,7 @@ const mapDispatchToProps = dispatch => {
     actions: bindActionCreators(
       {
         fetchPlaylistDetail,
+        fetchSong,
       },
       dispatch,
     ),

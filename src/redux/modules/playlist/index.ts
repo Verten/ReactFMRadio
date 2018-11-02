@@ -102,7 +102,7 @@ export default (state: IPlaylistState = initialState, action: IPlaylistAction): 
         isProcessing: false,
       }
     default:
-      return state
+      return { ...state }
   }
 }
 

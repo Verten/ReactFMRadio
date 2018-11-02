@@ -67,7 +67,7 @@ export default (state: ILoginState = initialState, action: IActionType): ILoginS
         isProcessing: false,
       }
     default:
-      return state
+      return { ...state }
   }
 }
 
